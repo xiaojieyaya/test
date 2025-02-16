@@ -1,0 +1,17 @@
+（1）实验组和对照组的⽤⼾数量、家访电话覆盖率（接到家访电话的⽤⼾数 / 总⽤⼾数）和平均通话时⻓。
+select tc.group as group_type, 
+       count(distinct us.user_id) as total_users,
+       concat(round(count(distinct call_id)/count(distinct us.user_id),3),'%') as call_coverage_rate,
+       avg(call_duration) as avg_call_duration
+from users us
+join call_logs cl using(user_id)
+join teachers tc using(teacher_id)
+group by tc.group
+
+（2）实验组和对照组的续费率。
+select tc.group as group_type,
+       concat(round(sum(renewal_status)/count(distinct re.user_id),3),'%') as renewals_rate
+from renewals re
+join call_logs cl using(user_id)
+join teachers tc using(teacher_id)
+group by tc.group
